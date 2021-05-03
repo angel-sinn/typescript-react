@@ -10,9 +10,29 @@ interface AppProps {
   deleteTodo: typeof deleteTodo;
 }
 
-class _App extends React.Component<AppProps> {
+// define state that we expect component to have
+interface AppState {
+  fetching: boolean;
+}
+
+// pass second argument as AppState
+class _App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+
+    this.state = { fetching: false };
+  }
+
+  // if prev props had no todos, and current props have todos, that means we have successfully fetched list
+  componentDidUpdate(prevProps: AppProps): void {
+    if (!prevProps.todos.length && this.props.todos.length) {
+      this.setState({ fetching: false });
+    }
+  }
+
   onButtonClick = (): void => {
     this.props.fetchTodos();
+    this.setState({ fetching: true });
   };
 
   onTodoClick = (id: number): void => {
@@ -33,6 +53,7 @@ class _App extends React.Component<AppProps> {
     return (
       <div>
         <button onClick={this.onButtonClick}>Fetch</button>
+        {this.state.fetching ? 'LOADING' : null}
         {this.renderList()}
       </div>
     );
