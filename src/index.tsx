@@ -7,10 +7,37 @@ interface AppProps {
   color?: string;
 }
 
+// structure of state
+interface AppState {
+  counter: number;
+}
+
 // reference interface as generic
-class App extends React.Component<AppProps> {
+class App extends React.Component<AppProps, AppState> {
+  // state = { counter: 0 }; // overrides state property defined in component
+
+  constructor(props: AppProps) {
+    super(props);
+
+    this.state = { counter: 0 };
+  }
+
+  onIncrement = (): void => {
+    this.setState({ counter: this.state.counter + 1 });
+  };
+
+  onDecrement = (): void => {
+    this.setState({ counter: this.state.counter - 1 });
+  };
+
   render() {
-    return <div>{this.props.color}</div>;
+    return (
+      <div>
+        <button onClick={this.onIncrement}>Increment</button>
+        <button onClick={this.onDecrement}>Decrement</button>
+        {this.state.counter}
+      </div>
+    );
   }
 }
 
